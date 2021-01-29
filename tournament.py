@@ -6,16 +6,15 @@ class Lutador:
 
     def __init__(self, nome, idade, peso, forca, faixa, arte):
         if(isinstance(nome, str) and isinstance(idade, int) and isinstance(peso, int) and isinstance(forca, int) and isinstance(faixa, str) and isinstance(arte, str)):
-            self.nome   = nome
-            self.idade  = idade
-            self.peso   = peso
-            self.forca  = forca
-            self.faixa  = faixa
-            self.arte   = arte
+            self.nome   = nome      # str
+            self.idade  = idade     # int
+            self.peso   = peso      # int
+            self.forca  = forca     # int
+            self.faixa  = faixa     # str
+            self.arte   = arte      # str
             self.poder  = peso*forca/(idade+10)
         else:
             print("ERROR: Lutador __init__", nome, idade, peso, forca, faixa, arte)
-
 
     def __str__(self):
         return f'Nome: {self.nome}\nIdade: {self.idade}\nPeso: {self.peso}\nForca: {self.forca}\nFaixa: {self.faixa}\nArte marcial: {self.arte}'
@@ -25,15 +24,36 @@ class Participante:
     derrotas = 0
     
     def __init__(self, lutador, peso_index, faixa):
-        self.lutador    = lutador       # Lutador
-        self.peso       = peso_index    # int(index(peso))
-        self.faixa      = faixa         # str
-
+        if(isinstance(lutador, Lutador) and isinstance(peso, int) and isinstance(faixa, str)):
+            self.lutador    = lutador       # Lutador
+            self.peso       = peso_index    # int(index(peso))
+            self.faixa      = faixa         # str
+        else:
+            print("ERROR: Participante __init__ lutador, peso_index ou faixa invalido", lutador, peso_index, faixa)
 
 
 class Torneio:
 
     def __init__(self, nome, artes, faixas, pesos):
+        if(isinstance(faixas, list) and isinstance(pesos, list)): # Verificando parâmetros mais complexos
+            for faixa in faixas:
+                if(not isinstance(faixa, str)):
+                    print("Erro: Torneio __init__ faixa invalida", faixa)
+                    return
+            
+            for peso_1 in pesos:
+                if(not isinstance(peso_1, list)):
+                    print("Erro: Torneio __init__ peso_1 invalido", peso_1)
+                    return
+                
+                for peso_2 in peso_1:
+                    if(not isinstance(peso_2, int)):
+                        print("Erro: Torneio __init__ peso_2 invalido", peso_2)
+                        return
+        else:
+            print("Error: Torneio __init__ faixas ou pesos invalidos", faixas, pesos)
+            return
+
         if(isinstance(nome, str) and isinstance(arte, str) and isinstance(faixas, list) and isinstance(pesos, list)):
             self.nome   = nome      # str
             self.arte   = arte      # str
@@ -41,7 +61,7 @@ class Torneio:
             self.pesos  = pesos     # list(list(int,int))
             self.participantes = []
         else:
-            print("ERROR: Torneio __init__", nome, artes, faixas, pesos)
+            print("ERROR: Torneio __init__ nome ou arte invalido", nome, arte)
 
 
     def __str__(self):
@@ -142,18 +162,21 @@ while(True):
             arte = input().capitalize()
             
             faixas = []
-            print("\nPara escolha das faixas, insira uma faixa e pressione Enter:")
-            faixa = input().capitalize()
-            while (faixa != ''):
-                faixas.append(faixa)
-                print("Insira a proxima faixa, para terminar pressione Enter com o campo vazio:")
-                faixa = input().capitalize()
-            
-            print("\nDeseja incluir categoria livre?")
+            print("\nDeseja incluir categoria faixa livre?")
             faixa_livre = input("Insira 's' para sim e 'n' para não, sem as aspas: ")
             if(faixa_livre == 's'):
                 faixas.append("Livre")
 
+            print("\nPara escolha das faixas, insira uma faixa e pressione Enter:")
+            faixa = input().capitalize()
+            while (faixa != ''):
+                if(faixa in faixas):
+                    print("Essa faixa já está inclusa no torneio")
+                else:
+                    faixas.append(faixa)
+                print("Insira a proxima faixa, para terminar pressione Enter com o campo vazio:")
+                faixa = input().capitalize()
+            
             pesos = []
             print("\nEscolha os intervalos de pesos:")
             print("Insira o valor menor do intervalo:")
@@ -225,6 +248,15 @@ while(True):
                 print("Erro: Não foi insetido um valor válido")
                 continue
 
+            pular = False
+            for part in torneio.participantes:
+                if(part.lutador == lutador):
+                    print("Este lutador já está participando deste torneio")
+                    pular = True
+                    break
+            if(pular):
+                continue
+
             opcoes_peso = []
             for c in range(len(torneio.pesos)):
                 if(torneio.pesos[c][0] <= lutador.peso and torneio.pesos[c][1] >= lutador.peso):
@@ -286,8 +318,9 @@ while(True):
 
         elif(entrada1 == '3'):
             print("\nTORNEIOS EXISTENTES:")
+            print("Nome \t\t|\t Arte-marcial")
             for torneio in torneios:
-                print(torneio.nome)
+                print(torneio.nome, " \t|\t", torneio.arte)
 
         elif(entrada1 == '4'):
             print("\nRANKING DE TORNEIO:")
@@ -348,7 +381,7 @@ while(True):
             peso = torneios[num].participantes[part1].peso
             indices_validos = []
             for c in range(len(torneios[num].participantes)):
-                if(torneios[num].participantes[c].faixa == faixa and torneios[num].participantes[c].peso == peso):
+                if(torneios[num].participantes[c].faixa == faixa and torneios[num].participantes[c].peso == peso and c != part1):
                     print(str(c) + " - " + torneios[num].participantes[c].lutador.nome)
                     indices_validos.append(c)
                 else:
@@ -386,6 +419,15 @@ while(True):
 
             print("\nInsira o nome do lutador:")
             nome = input().capitalize()
+
+            pular = False
+            for lutador in lutadores:
+                if(lutador.nome == nome):
+                    print("Já existe um lutador com este nome:")
+                    pular = True
+                    break
+            if(pular):
+                continue
 
             print("\nInsira a idade do lutador:")
             try:
