@@ -83,10 +83,12 @@ class Torneio:
             print("ERROR: Torneio addParticipante", lutador, peso_index, faixa)
 
     def ordParticipantes(self):
+        indiceMax = 0
         indice = 0
         while(indice < len(self.participantes) - 1): # O indice vai crescendo porém após mudanças ele volta
             if(self.participantes[indice].vitorias > self.participantes[indice+1].vitorias): # Caso mais comum
-                indice += 1
+                indiceMax += 1
+                indice = indiceMax
                 continue
 
             if(self.participantes[indice].vitorias < self.participantes[indice+1].vitorias):
@@ -96,7 +98,8 @@ class Torneio:
                 indice -= 1
 
             elif(self.participantes[indice].derrotas < self.participantes[indice+1].derrotas):
-                indice += 1
+                indiceMax += 1
+                indice = indiceMax
                 continue
 
             elif(self.participantes[indice].derrotas > self.participantes[indice+1].derrotas):
@@ -112,7 +115,11 @@ class Torneio:
                 indice -= 1
             
             else:
-                indice += 1
+                indiceMax += 1
+                indice = indiceMax
+
+            if(indice == -1):
+                indice = 1
 
         return self.participantes
 
