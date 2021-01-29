@@ -154,9 +154,9 @@ while(True):
         print("1 - Criar torneio")
         print("2 - Inscrever lutador")
         print("3 - Ver torneios existentes")
-        print("4 - Ver ranking de torneio -> escolhe um torneio existente")
-        print("5 - Ver lutadores inscritos em torneio -> escolhe um torneio existente")
-        print("6 - Realizar luta -> escolhe um torneio existente -> escolhe dois lutadores inscritos")
+        print("4 - Ver ranking de torneio")
+        print("5 - Ver lutadores inscritos em torneio")
+        print("6 - Realizar luta")
         entrada1 = input("Insira apenas um algarismo: ")
 
         if(entrada1 == '1'):
@@ -418,7 +418,7 @@ while(True):
     elif(entrada0 == '2'):    # Menu de Lutador
         print("1 - Cadastrar lutador")
         print("2 - Ver lutadores")
-        print("3 - Ver detalhes de lutador -> escolhe um lutador existente")
+        print("3 - Ver detalhes de lutador")
         entrada1 = input("Insira o numero da opção: ")
 
         if(entrada1 == '1'):
