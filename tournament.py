@@ -12,7 +12,7 @@ class Lutador:
             self.forca  = forca     # int
             self.faixa  = faixa     # str
             self.arte   = arte      # str
-            self.poder  = peso*forca/(idade+10)
+            self.poder  = -peso*forca*(((idade-40)**2)-1600)/160000
         else:
             print("ERROR: Lutador __init__", nome, idade, peso, forca, faixa, arte)
 
@@ -332,6 +332,11 @@ while(True):
         elif(entrada1 == '4'):
             print("\nRANKING DE TORNEIO:")
             print("\nSelecione um torneio:")
+            
+            if(len(torneios) < 1):
+                print("Você primeiro precisa criar um torneio")
+                continue
+
             for c in range(len(torneios)):
                 print(str(c) + " - " + torneios[c].nome)
 
