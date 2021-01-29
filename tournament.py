@@ -329,9 +329,9 @@ while(True):
                 continue
 
             print("\nTORNEIOS EXISTENTES:")
-            print("Nome \t\t|\t Arte-marcial")
+            print("Nome \t\t\t |\t Arte-marcial")
             for torneio in torneios:
-                print(torneio.nome, " \t|\t", torneio.arte)
+                print(torneio.nome, "\t"*(3 - (len(torneio.nome)+1)//8), "|\t", torneio.arte)
 
         elif(entrada1 == '4'):  # Ranking Torneio
             if(len(torneios) < 1):
@@ -495,13 +495,20 @@ while(True):
                 print(lutador.nome)
 
         elif(entrada1 == '3'):  # Detalhes lutador
+            if(len(lutadores) < 1):
+                print("Não há nenhum lutador disponível")
+                continue
+
             print("\nVER DETALHES DE LUTADOR:")
             print("\nSelecione um dos lutadores:")
             for c in range(len(lutadores)):
                 print(str(c) + " - " + lutadores[c].nome)
-            
-            num = int(input("Insira o numero do lutador:"))
-            print(lutadores[num])
+            try:
+                num = int(input("Insira o numero do lutador:"))
+                print(lutadores[num])
+            except:
+                print("Este não é um id válido")
+                # continue -> não faz diferença nesse caso
 
         else:
             print("Não foi inserida uma opção válida, insira apenas um algarismo de 1 a 3")
@@ -509,7 +516,8 @@ while(True):
     elif(entrada0 == '3'):    # Criar torneio aleatorio
         print("Criando Torneio Aleatório...")
 
-        possiveis_nomes_torneio = ["Os Faixa Preta", "Vem pro X1", "O Melhor da Rua", "Trocação de Soco", "Cai na mão", "Torneio Mundial", "World Championship", "Rei do Ringue", "10min sem perder a amizade"]
+        possiveis_nomes_torneio = [ "Os Faixa Preta", "Vem pro X1", "O Melhor da Rua", "Trocação de Soco", "Cai na mão", "Torneio Mundial", "World Championship", "Rei do Ringue",
+                                    "10min na amizade", "Só M7", "A arte da tapeação", "Torneio sem nome", "Mais socos menos nomes", "Torneio de Autodefesa"]
         
         possiveis_artes = ["Jiu-jitsu", "Kung Fu", "Muay Thai", "Karate", "Capoeira", "Judo", "Tae Kwon Do", "Boxe", "Ninjutsu"]
         possiveis_faixas = ["Branca", "Cinza", "Azul", "Amarela", "Laranja", "Verde", "Roxa", "Marrom", "Preta"]
