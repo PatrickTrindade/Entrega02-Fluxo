@@ -18,7 +18,7 @@ class Lutador:
 
 
     def __str__(self):
-        return 'Nome: {self.nome}\nIdade: {self.idade}\nPeso: {self.peso}\nForca: {self.forca}\nFaixa: {self.faixa}\nArte marcial: {self.arte}'
+        return f'Nome: {self.nome}\nIdade: {self.idade}\nPeso: {self.peso}\nForca: {self.forca}\nFaixa: {self.faixa}\nArte marcial: {self.arte}'
 
 class Participante:
     vitorias = 0
@@ -32,20 +32,20 @@ class Participante:
 
 
 class Torneio:
-    participantes = [] # lista de Participantes
 
     def __init__(self, nome, artes, faixas, pesos):
-        if(isinstance(nome, str) and isinstance(artes, list) and isinstance(faixas, list) and isinstance(pesos, list)):
+        if(isinstance(nome, str) and isinstance(arte, str) and isinstance(faixas, list) and isinstance(pesos, list)):
             self.nome   = nome      # str
             self.arte   = arte      # str
             self.faixas = faixas    # list(str)
             self.pesos  = pesos     # list(list(int,int))
+            self.participantes = []
         else:
             print("ERROR: Torneio __init__", nome, artes, faixas, pesos)
 
 
     def __str__(self):
-        text = 'Nome: {self.nome}\nArte marcial: {self.arte}\nFaixa(s):'
+        text = f'Nome: {self.nome}\nArte marcial: {self.arte}\nFaixa(s):'
         for faixa in self.faixas:
             text += faixa + ", "
         
@@ -64,7 +64,7 @@ class Torneio:
 
     def ordParticipantes(self):
         indice = 0
-        while(indice < len(self.participantes)): # O indice vai crescendo porém após mudanças ele volta
+        while(indice < len(self.participantes) - 1): # O indice vai crescendo porém após mudanças ele volta
             if(self.participantes[indice].vitorias > self.participantes[indice+1].vitorias): # Caso mais comum
                 indice += 1
                 continue
@@ -90,12 +90,15 @@ class Torneio:
                 self.participantes[indice] = self.participantes[indice + 1]
                 self.participantes[indice + 1] = var
                 indice -= 1
+            
+            else:
+                indice += 1
 
-            return self.participantes
+        return self.participantes
 
     def realizarLuta(self, participanteA, participanteB):
         if(isinstance(participanteA, Participante) and isinstance(participanteB, Participante)):
-            if(participanteA.poder > participanteB.poder):
+            if(participanteA.lutador.poder > participanteB.lutador.poder):
                 participanteA.vitorias += 1
                 participanteB.derrotas += 1
                 vitorioso = participanteA
@@ -133,18 +136,18 @@ while(True):
             print("CRIAR TORNEIO:")
             
             print("\nInsira um nome para o torneio:")
-            nome = input()
+            nome = input().capitalize()
 
             print("\nInsira a arte marcial do torneio:")
-            arte = input()
+            arte = input().capitalize()
             
             faixas = []
             print("\nPara escolha das faixas, insira uma faixa e pressione Enter:")
-            faixa = input()
+            faixa = input().capitalize()
             while (faixa != ''):
                 faixas.append(faixa)
                 print("Insira a proxima faixa, para terminar pressione Enter com o campo vazio:")
-                faixa = input()
+                faixa = input().capitalize()
             
             print("\nDeseja incluir categoria livre?")
             faixa_livre = input("Insira 's' para sim e 'n' para não, sem as aspas: ")
@@ -202,25 +205,29 @@ while(True):
                 print(str(c) + " - " + lutadores[c].nome)
             
             try:
-                num = int(input("Insira o número do lutador:"))
+                num = int(input("Insira o número do lutador: "))
                 lutador = lutadores[num]
             except:
                 print("Erro: Não foi insetido um valor válido")
                 continue
 
+            print("\nSelecione um dos torneios:")
+            torneios_possiveis = []
             for c in range(len(torneios)):
-                print(str(c) + " - " + torneios[c].nome)
+                if(torneios[c].arte == lutador.arte):
+                    print(str(len(torneios_possiveis)) + " - " + torneios[c].nome)
+                    torneios_possiveis.append(c)
             
             try:
-                num = int(input("Insira o número do torneio:"))
-                torneio = torneios[num]
+                num = int(input("Insira o número do torneio: "))
+                torneio = torneios[torneios_possiveis[num]]
             except:
                 print("Erro: Não foi insetido um valor válido")
                 continue
 
             opcoes_peso = []
             for c in range(len(torneio.pesos)):
-                if(torneio.pesos[c][0] <= lutador.peso and torneio.pesos[c][1] >= lutador.pesos):
+                if(torneio.pesos[c][0] <= lutador.peso and torneio.pesos[c][1] >= lutador.peso):
                     dic_pesos = {"texto": str(torneio.pesos[c][0]) + " - " + str(torneio.pesos[c][1]), "index": c}
                     opcoes_peso.append(dic_pesos)
             
@@ -239,6 +246,8 @@ while(True):
                     print("O faixa deste lutador não é aceita por este torneio.")
 
                 else:
+                    print("AAA")
+                    print(opcoes_peso)
                     if(len(opcoes_peso) == 1):
                         print("\nIntervalo de pesos selecionado: " + dic_pesos["texto"])
                         peso_index = opcoes_peso[0]["index"] # outra opcao -> dic_pesos["index"]
@@ -248,7 +257,12 @@ while(True):
                         for c in range(len(opcoes_peso)):
                             print(str(c) + " - " + opcoes_peso[c]["texto"])
                         
-                        num = input("Insira o numero da opção: ")
+                        try:
+                            num = int(input("Insira o numero da opção: "))
+                        except:
+                            print("Não foi inserido um numero válido")
+                            continue
+
                         peso_index = opcoes_peso[num]["index"]
                     
 
@@ -260,18 +274,23 @@ while(True):
                         for c in range(len(opcoes_faixa)):
                             print(str(c) + " - " + opcoes_faixa[c])
                         
-                        num = input("Insira o numero da opção: ")
+                        try:
+                            num = int(input("Insira o numero da opção: "))
+                        except:
+                            print("Não foi inserido um numero válido")
+                            continue
+
                         faixa = opcoes_faixa[num]          
                       
                     torneio.addParticipante(lutador, peso_index, faixa)            
 
         elif(entrada1 == '3'):
-            print("TORNEIOS EXISTENTES:")
+            print("\nTORNEIOS EXISTENTES:")
             for torneio in torneios:
                 print(torneio.nome)
 
         elif(entrada1 == '4'):
-            print("RANKING DE TORNEIO:")
+            print("\nRANKING DE TORNEIO:")
             print("\nSelecione um torneio:")
             for c in range(len(torneios)):
                 print(str(c) + " - " + torneios[c].nome)
@@ -283,12 +302,12 @@ while(True):
                 print("Erro: Não foi inserido um valor válido")
                 continue
 
-            print("Nome \t\t V/D")
+            print("Nome \t\t\t V/D")
             for part in participantes:
                 print(part.lutador.nome + "\t\t" + str(part.vitorias) + "/" + str(part.derrotas))
 
         elif(entrada1 == '5'):
-            print("LUTADORES INSCRITOS:")
+            print("\nLUTADORES INSCRITOS:")
             print("\nSelecione um torneio:")
             for c in range(len(torneios)):
                 print(str(c) + " - " + torneios[c].nome)
@@ -296,13 +315,13 @@ while(True):
             try:
                 num = int(input("Insira o numero do torneio: "))    
                 for part in torneios[num].participantes:
-                    print(part.nome)
+                    print(part.lutador.nome)
             except:
                 print("Erro: Não foi inserido um valor válido")
                 continue
 
         elif(entrada1 == '6'):
-            print("REALIZAR LUTA:")
+            print("\nREALIZAR LUTA:")
             print("\nSelecione um torneio:")
             for c in range(len(torneios)):
                 print(str(c) + " - " + torneios[c].nome)
@@ -315,19 +334,43 @@ while(True):
 
             print("\nEscolha os participantes:")
             for c in range(len(torneios[num].participantes)):
-                print(str(c) + " - " + torneios[num].participantes[c].nome)
+                print(str(c) + " - " + torneios[num].participantes[c].lutador.nome)
 
-            part1 = input("Insira o numero do primeiro participante")
-            part2 = input("Insira o numero do segundo participante")
-
-            if(part1 >= c or part2 >= c or part1 < 0 or part2 < 0): # c = quantidade de participantes no torneio
+            try:
+                part1 = int(input("Insira o numero do primeiro participante: "))
+            except:
                 print("Numero de participante inválido")
                 continue
             
-            p1 = torneios[num].participantes[part1] 
-            p2 = torneios[num].participantes[part2]
+            print("Participantes da mesma categoria de " + torneios[num].participantes[part1].lutador.nome)
 
-            torneios[num].realizarLuta(p1, p2)
+            faixa = torneios[num].participantes[part1].faixa
+            peso = torneios[num].participantes[part1].peso
+            indices_validos = []
+            for c in range(len(torneios[num].participantes)):
+                if(torneios[num].participantes[c].faixa == faixa and torneios[num].participantes[c].peso == peso):
+                    print(str(c) + " - " + torneios[num].participantes[c].lutador.nome)
+                    indices_validos.append(c)
+                else:
+                    print(str(c))
+
+            if(len(indices_validos) == 0):
+                print("Não há outros participantes na mesma categoria de " + torneios[num].participantes[part1].lutador.nome)
+                continue
+
+            try:
+                part2 = int(input("Insira o numero do segundo participante: "))
+                p1 = torneios[num].participantes[part1] 
+                p2 = torneios[num].participantes[part2]
+                if(part2 not in indices_validos):
+                    print("Os participantes devem pertencer a mesma categoria de peso e faixa")
+                    continue
+            except:
+                print("Numero de participante inválido")
+                continue
+
+            vitorioso = torneios[num].realizarLuta(p1, p2)
+            print("E " + vitorioso.lutador.nome + " vence o confronto!!")
 
         else:
             print("Não foi inserida uma opção válida, insira apenas um algarismo de 1 a 6")
@@ -342,17 +385,29 @@ while(True):
             print("CADASTRAR LUTADOR:")
 
             print("\nInsira o nome do lutador:")
-            nome = input()
+            nome = input().capitalize()
 
             print("\nInsira a idade do lutador:")
-            idade = input()
+            try:
+                idade = int(input())
+            except:
+                print("Não foi inserida uma idade válida")
+                continue
 
             print("\nInsira o peso do lutador:")
-            peso = input()
+            try:
+                peso = int(input())
+            except:
+                print("Não foi inserida um peso válido")
+                continue
 
             print("\nInsira a forca do lutador:")
-            forca = input()
-
+            try:
+                forca = int(input())
+            except:
+                print("Não foi inserida uma forca válida")
+                continue
+            
             print("\nInsira a faixa do lutador")
             faixa = input()
 
@@ -371,7 +426,7 @@ while(True):
             print("VER DETALHES DE LUTADOR:")
             print("\nSelecione um dos lutadores:")
             for c in range(len(lutadores)):
-                print(c + " - " + lutadores[c].nome)
+                print(str(c) + " - " + lutadores[c].nome)
             
             num = int(input("Insira o numero do lutador:"))
             print(lutadores[num])
@@ -387,8 +442,8 @@ while(True):
         possiveis_artes = ["Jiu-jitsu", "Kung Fu", "Muay Thai", "Karate", "Capoeira", "Judo", "Tae Kwon Do", "Boxe", "Ninjutsu"]
         possiveis_faixas = ["Branca", "Cinza", "Azul", "Amarela", "Laranja", "Verde", "Roxa", "Marrom", "Preta"]
 
-        possiveis_nomes_lutador = ["John", "Naruto", "Amanda", "Sakura", "Saitama", "Ryu", "Chun-Li", "Cammy", "Goku"]
-        possiveis_sobrenomes_lutador = ["Cena", "Uzumaki", "Nunes", "Haruno", "Silva", "Alves", "Ferreira"]
+        possiveis_nomes_lutador = ["John", "Naruto", "Amanda", "Sakura", "Saitama", "Ryu", "Chun-Li", "Akuma", "Cammy", "Sagat", "Guile", "Goku", "Vegeta", "Bulma", "Mestre", "Itachi", "Madara"]
+        possiveis_sobrenomes_lutador = ["Cena", "Uzumaki", "Nunes", "Haruno", "Silva", "Alves", "Ferreira", "Kami", "Tanaka", "Watanabe", "Yamamoto", "Uchiha"]
 
         var = random.randint( 0, len(possiveis_nomes_torneio) - 1)
         nome_torneio = possiveis_nomes_torneio[var]
@@ -398,7 +453,7 @@ while(True):
 
         numFaixas = len(possiveis_faixas)
         faixas = []
-        for c in range(random.randint(1, numFaixas)):   # 1 a n categorias de faixas
+        for c in range(random.randint(1, 5)):   # 1 a n categorias de faixas
             var = random.randint( 0, numFaixas - 1 - c)
             faixas.append(possiveis_faixas[var])
             possiveis_faixas.pop(var)
@@ -413,11 +468,17 @@ while(True):
         print("Torneio aleatório criado com sucesso!")
         print("Criando Lutadores...")
 
-        for _ in range(random.randint(4, 10)):  # 4 a 10 lutadores por torneio
+        nomes_adicionados = []
+        for _ in range(random.randint(4, 12)):  # 4 a 12 lutadores por torneio
             var = random.randint(0, len(possiveis_nomes_lutador) - 1)
             nome_lutador = possiveis_nomes_lutador[var]
             var = random.randint(0, len(possiveis_sobrenomes_lutador) - 1)
             nome_lutador += " " + possiveis_sobrenomes_lutador[var]
+            
+            if(nome_lutador in nomes_adicionados):  # Não cria 2 lutadores com mesmo nome
+                continue
+                
+            nomes_adicionados.append(nome_lutador)
 
             idade = random.randint(8, 80)   # idade entre 8 e 80 (inclusive)
 
