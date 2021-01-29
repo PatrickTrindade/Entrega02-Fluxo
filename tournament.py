@@ -12,7 +12,7 @@ class Lutador:
             self.forca  = forca     # int
             self.faixa  = faixa     # str
             self.arte   = arte      # str
-            self.poder  = -peso*forca*(((idade-40)**2)-1600)/160000
+            self.poder  = -peso*forca*(((idade-40)**2)-1600)/1600 # aprox. entre 0-10.000
         else:
             print("ERROR: Lutador __init__", nome, idade, peso, forca, faixa, arte)
 
@@ -159,7 +159,7 @@ while(True):
         print("6 - Realizar luta")
         entrada1 = input("Insira apenas um algarismo: ")
 
-        if(entrada1 == '1'):
+        if(entrada1 == '1'):    # Criar Torneio
             print("\nCRIAR TORNEIO:")
             
             print("\nInsira um nome para o torneio:")
@@ -222,13 +222,13 @@ while(True):
             torneios.append(Torneio(nome, arte, faixas, pesos))
             print("Torneio adicionado com sucesso!\n")
 
-        elif(entrada1 == '2'):
-            print("\nINSCREVER LUTADOR:")
-
+        elif(entrada1 == '2'):  # Inscrever Lutador
             numLutadores = len(lutadores)
             if(numLutadores < 1):
                 print("Você primeiro precisa cadastrar um lutador")
                 continue
+
+            print("\nINSCREVER LUTADOR:")
 
             print("\nSelecione um dos lutadores:")
             for c in range(len(lutadores)):
@@ -323,20 +323,25 @@ while(True):
                       
                     torneio.addParticipante(lutador, peso_index, faixa)            
 
-        elif(entrada1 == '3'):
+        elif(entrada1 == '3'):  # Torneios Existentes
+            if(len(torneios) < 1):
+                print("Não há torneios existentes")
+                continue
+
             print("\nTORNEIOS EXISTENTES:")
             print("Nome \t\t|\t Arte-marcial")
             for torneio in torneios:
                 print(torneio.nome, " \t|\t", torneio.arte)
 
-        elif(entrada1 == '4'):
-            print("\nRANKING DE TORNEIO:")
-            print("\nSelecione um torneio:")
-            
+        elif(entrada1 == '4'):  # Ranking Torneio
             if(len(torneios) < 1):
                 print("Você primeiro precisa criar um torneio")
                 continue
 
+            print("\nRANKING DE TORNEIO:")
+            
+            print("\nSelecione um torneio:")
+            
             for c in range(len(torneios)):
                 print(str(c) + " - " + torneios[c].nome)
 
@@ -351,7 +356,7 @@ while(True):
             for part in participantes:
                 print(part.lutador.nome + "\t\t" + str(part.vitorias) + "/" + str(part.derrotas))
 
-        elif(entrada1 == '5'):
+        elif(entrada1 == '5'):  # Lutadores Inscritos
             print("\nLUTADORES INSCRITOS:")
             print("\nSelecione um torneio:")
             for c in range(len(torneios)):
@@ -365,7 +370,10 @@ while(True):
                 print("Erro: Não foi inserido um valor válido")
                 continue
 
-        elif(entrada1 == '6'):
+        elif(entrada1 == '6'):  # Realizar luta
+            if(len(torneios) < 1):
+                print("Não há torneios disponíveis")
+
             print("\nREALIZAR LUTA:")
             print("\nSelecione um torneio:")
             for c in range(len(torneios)):
@@ -376,6 +384,13 @@ while(True):
             except:
                 print("Erro: Não foi inserido um valor válido")
                 continue
+
+            if(num >= len(torneios)):
+                print("Id de torneio inválido")
+                continue
+
+            if(len(torneios[num].participantes) < 2):
+                print("Este toneio não possui participantes suficientes")
 
             print("\nEscolha os participantes:")
             for c in range(len(torneios[num].participantes)):
@@ -426,7 +441,7 @@ while(True):
         print("3 - Ver detalhes de lutador")
         entrada1 = input("Insira o numero da opção: ")
 
-        if(entrada1 == '1'):
+        if(entrada1 == '1'):    # Cadastrar Lutador
             print("\nCADASTRAR LUTADOR:")
 
             print("\nInsira o nome do lutador:")
@@ -447,6 +462,9 @@ while(True):
             except:
                 print("Não foi inserida uma idade válida")
                 continue
+
+            if(idade < 0):
+                print("O valor de idade deve ser positivo")
 
             print("\nInsira o peso do lutador:")
             try:
@@ -471,12 +489,12 @@ while(True):
             lutadores.append(Lutador(nome, idade, peso, forca, faixa, arte))
             print("Lutador adicionado com sucesso!\n")
 
-        elif(entrada1 == '2'):    # Printa o nome dos lutadores
+        elif(entrada1 == '2'):  # Ver nome dos lutadores
             print("\nVER LUTADORES:")
             for lutador in lutadores:
                 print(lutador.nome)
 
-        elif(entrada1 == '3'):    # Seleciona um lutador para printar seus atributos
+        elif(entrada1 == '3'):  # Detalhes lutador
             print("\nVER DETALHES DE LUTADOR:")
             print("\nSelecione um dos lutadores:")
             for c in range(len(lutadores)):
@@ -491,7 +509,7 @@ while(True):
     elif(entrada0 == '3'):    # Criar torneio aleatorio
         print("Criando Torneio Aleatório...")
 
-        possiveis_nomes_torneio = ["Os Faixa Preta", "Vem pro X1", "O Melhor da Rua", "Trocação de Soco", "Cai na mão", "Torneio Mundial", "World Championship", "Rei do Ringue"]
+        possiveis_nomes_torneio = ["Os Faixa Preta", "Vem pro X1", "O Melhor da Rua", "Trocação de Soco", "Cai na mão", "Torneio Mundial", "World Championship", "Rei do Ringue", "10min sem perder a amizade"]
         
         possiveis_artes = ["Jiu-jitsu", "Kung Fu", "Muay Thai", "Karate", "Capoeira", "Judo", "Tae Kwon Do", "Boxe", "Ninjutsu"]
         possiveis_faixas = ["Branca", "Cinza", "Azul", "Amarela", "Laranja", "Verde", "Roxa", "Marrom", "Preta"]
@@ -539,7 +557,7 @@ while(True):
             peso_index = random.randint(0, len(pesos) - 1)
             peso = random.randint(pesos[peso_index][0], pesos[peso_index][1])
 
-            forca = random.randint(1, 100)  # forca entre 1 e 100
+            forca = random.randint(1, 10000)  # forca entre 1 e 10000
 
             var = random.randint(0, len(faixas) - 1)
             faixa = faixas[var]
