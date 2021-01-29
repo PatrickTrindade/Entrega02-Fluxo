@@ -123,7 +123,7 @@ while(True):
     print()
 
     if(entrada0 == '1'):  # Menu de torneio
-        print("MENU DE TORNEIO:")
+        print("\nMENU DE TORNEIO:")
         print("1 - Criar torneio")
         print("2 - Inscrever lutador")
         print("3 - Ver torneios existentes")
@@ -133,7 +133,7 @@ while(True):
         entrada1 = input("Insira apenas um algarismo: ")
 
         if(entrada1 == '1'):
-            print("CRIAR TORNEIO:")
+            print("\nCRIAR TORNEIO:")
             
             print("\nInsira um nome para o torneio:")
             nome = input().capitalize()
@@ -193,7 +193,7 @@ while(True):
             print("Torneio adicionado com sucesso!\n")
 
         elif(entrada1 == '2'):
-            print("INSCREVER LUTADOR:")
+            print("\nINSCREVER LUTADOR:")
 
             numLutadores = len(lutadores)
             if(numLutadores < 1):
@@ -382,7 +382,7 @@ while(True):
         entrada1 = input("Insira o numero da opção: ")
 
         if(entrada1 == '1'):
-            print("CADASTRAR LUTADOR:")
+            print("\nCADASTRAR LUTADOR:")
 
             print("\nInsira o nome do lutador:")
             nome = input().capitalize()
@@ -409,21 +409,21 @@ while(True):
                 continue
             
             print("\nInsira a faixa do lutador")
-            faixa = input()
+            faixa = input().capitalize()
 
             print("\nInsira a arte marcial do lutador:")
-            arte = input()
+            arte = input().capitalize()
 
             lutadores.append(Lutador(nome, idade, peso, forca, faixa, arte))
             print("Lutador adicionado com sucesso!\n")
 
         elif(entrada1 == '2'):    # Printa o nome dos lutadores
-            print("VER LUTADORES:")
+            print("\nVER LUTADORES:")
             for lutador in lutadores:
                 print(lutador.nome)
 
         elif(entrada1 == '3'):    # Seleciona um lutador para printar seus atributos
-            print("VER DETALHES DE LUTADOR:")
+            print("\nVER DETALHES DE LUTADOR:")
             print("\nSelecione um dos lutadores:")
             for c in range(len(lutadores)):
                 print(str(c) + " - " + lutadores[c].nome)
